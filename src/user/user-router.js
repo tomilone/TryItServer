@@ -5,16 +5,16 @@ const userRouter = express.Router();
 const jsonBodyParser = express.json();
 
 userRouter.route('/register').post(jsonBodyParser, (req, res, next) => {
-  let { username, password } = req.body;
+  let { userName, userPass } = req.body;
 
   userService
-    .checkUserExists(req.app.get('db'), username)
+    .checkUserExists(req.app.get('db'), userName)
     .then((user) => {
       if (user.length == 1) {
-        return res.status(404).json({ error: 'This username already exists!' });
+        return res.status(400).json({ error: 'This username already exists!' });
       } else {
         userService
-          .registerUser(req.app.get('db'), username, password)
+          .registerUser(req.app.get('db'), userName, userPass)
           .then((user) => {
             return res.status(200).json(user);
           });
