@@ -1,17 +1,19 @@
 INSERT INTO users (username, password)
 VALUES ('demo', 'demopassword');
 
-INSERT INTO cards (title, content, tags, author)
-VALUES 
-('Biking', 'went on a bike ride with my wife & kids.', 'Recreation', 1),
-('Making Cookies', 'made cookies, here is my recipe:', 'Culinary', 1),
-('Monopoly', 'played monopoly with my family', 'Entertainment', 1);
-
 INSERT INTO tags (tag)
 VALUES 
 ('Recreation'),
 ('Culinary'),
 ('Entertainment');
+
+INSERT INTO cards (title, content, tags, tries, author)
+VALUES 
+('Biking', 'went on a bike ride with my wife & kids.', 1, 5, 1),
+('Making Cookies', 'made cookies, here is my recipe:', 2, 3, 1),
+('Monopoly', 'played monopoly with my family', 3, 1, 1);
+
+
 
 
 
