@@ -8,6 +8,16 @@ const jsonBodyParser = express.json();
 
 CardRouter.route('/')
   .get((req, res, next) => {
+    const { id } = req.query;
+
+    if (id) {
+      return CardService.getUserCards(req.app.get('db'), id).then(
+        (userCards) => {
+          return res.json(userCards);
+        }
+      );
+    }
+
     CardService.getAllCards(req.app.get('db'))
       .then((cards) => {
         return res.json(cards);
@@ -43,6 +53,22 @@ CardRouter.route('/')
         return res.status(204).end();
       })
       .catch(next);
+  })
+  .delete(jsonBodyParser, (req, res, next) => {
+    const { id } = req.body;
+    console.log(id);
+    CardService.deleteCard(req.app.get('db'), id)
+      .then((numRowsAffected) => {
+        logger.info(`card with id ${id} has been deleted!`);
+        return res.status(204).end();
+      })
+      .catch(next);
   });
+
+CardRouter.route('/:authorId').get((req, res, next) => {
+  const { id } = req;
+
+  console.log(id);
+});
 
 module.exports = CardRouter;

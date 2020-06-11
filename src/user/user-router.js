@@ -23,29 +23,28 @@ userRouter.route('/register').post(jsonBodyParser, (req, res, next) => {
     .catch(next);
 });
 userRouter.route('/login').post(jsonBodyParser, (req, res, next) => {
-  const { username, userPassword } = req.body;
+  const { userName, userPass } = req.body;
 
-  if (!username || !userPassword) {
+  if (!userName || !userPass) {
     return res
       .status(404)
       .json({ error: 'Please enter a valid username & password' });
   }
   userService
-    .getUserWithUserName(req.app.get('db'), username)
+    .getUserWithUserName(req.app.get('db'), userName)
     .then((user) => {
-      console.log(user);
       if (!user) {
-        res.statusMessage = `No user registered with username: ${username}`;
+        res.statusMessage = `No user registered with username: ${userName}`;
         return res.status(404).end();
       }
       const { id, password } = user;
 
-      if (password != userPassword) {
+      if (password != userPass) {
         res.statusMessage = `Invalid password`;
         return res.status(401).end();
       }
-
-      return res.status(200).json({ success: id });
+      console.log(id);
+      return res.status(200).json(id);
     })
     .catch(next);
 });
