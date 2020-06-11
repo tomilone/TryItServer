@@ -36,8 +36,7 @@ CardRouter.route('/')
   })
   .patch(jsonBodyParser, (req, res, next) => {
     const { tries } = req.body;
-    const { id } = req.query;
-    console.log(id);
+    const { id } = req.body;
 
     CardService.updateTries(req.app.get('db'), id, tries)
       .then((numRowsAffected) => {

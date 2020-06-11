@@ -4,8 +4,9 @@ const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
-const cardRouter = require('../src/cards/card-router');
-const tagRouter = require('../src/tags/tags-router');
+const cardRouter = require('./cards/card-router');
+const tagRouter = require('./tags/tags-router');
+const userRouter = require('./user/user-router');
 
 const app = express();
 
@@ -32,5 +33,6 @@ app.use(function errorHandler(error, req, res, next) {
 
 app.use('/api/cards', cardRouter);
 app.use('/api/tags', tagRouter);
+app.use('/api/user', userRouter);
 
 module.exports = app;
