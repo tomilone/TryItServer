@@ -1,33 +1,15 @@
-INSERT INTO users (username, password)
-VALUES ('demo', 'demopassword');
-
 INSERT INTO tags (tag)
 VALUES 
 ('Recreation'),
 ('Culinary'),
 ('Entertainment');
 
-INSERT INTO cards (title, content, tags, tries, author)
+INSERT INTO cards (title, user_id, content, tags, tries)
 VALUES 
-('Biking', 'went on a bike ride with my wife & kids.', 1, 5, 1),
-('Making Cookies', 'made cookies, here is my recipe:', 2, 3, 1),
-('Monopoly', 'played monopoly with my family', 3, 1, 1);
+('Biking', '782ab639-1a11-4f45-86d0-c16e0cbafdc7', 'went on a bike ride with my wife & kids.', 1, 5),
+('Making Cookies', '782ab639-1a11-4f45-86d0-c16e0cbafdc7' , 'made cookies, here is my recipe:', 2, 3),
+('Monopoly','782ab639-1a11-4f45-86d0-c16e0cbafdc7', 'played monopoly with my family', 3, 1);
 
 
 
 
-
-
-
-
--- password is 'demopassword'
--- INSERT INTO users (email, password) 
--- VALUES
--- ('demo@demo.com', '$2a$04$DjkbEZXF5djK5j/wgpjBY.vqOxiqvUk5tXUSlvwQIv0sOOmmFV/O6');
-
--- INSERT INTO collections (user_id, collection_name)
--- VALUES
--- (1, 'React Front'),
--- (1, 'Node Server'),
--- (1, 'Django Server'),
--- (1, 'Friendship');

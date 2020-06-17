@@ -14,3 +14,4 @@
 {"message":"card with id 3 has been deleted!","level":"info"}
 {"message":"card with id of undefined has been created!","level":"info"}
 {"message":"card with id 7 has been deleted!","level":"info"}
+{"message":"author is required","level":"error"}

@@ -8,9 +8,18 @@ const CardService = {
   updateTries(db, id, tries) {
     return db('cards').where({ id }).update({ tries });
   },
-  //author is an int
-  getUserCards(db, author) {
-    return db('cards').where({ author });
+  updateCardContent(db, id, content) {
+    return db('cards')
+      .where({ id })
+      .update({ content })
+      .returning('*')
+      .then((rows) => rows[0]);
+  },
+  getCardById(db, id) {
+    return db('cards').where({ id }).first();
+  },
+  getUserCards(db, userId) {
+    return db('cards').select('*').where({ user_id: userId });
   },
   deleteCard(db, id) {
     return db('cards').where({ id }).delete();

@@ -2,16 +2,22 @@ const express = require('express');
 const CardService = require('./card-service');
 const logger = require('../logger');
 const { json } = require('express');
+const requireToken = require('../middleware/requireToken');
+const {
+  checkUserId,
+  checkCardExists,
+  checkCardContent,
+} = require('./card-helper');
 
 const CardRouter = express.Router();
 const jsonBodyParser = express.json();
 
 CardRouter.route('/')
   .get((req, res, next) => {
-    const { id } = req.query;
+    const { userId } = req.query;
 
-    if (id) {
-      return CardService.getUserCards(req.app.get('db'), id).then(
+    if (userId) {
+      return CardService.getUserCards(req.app.get('db'), userId).then(
         (userCards) => {
           return res.json(userCards);
         }
@@ -24,25 +30,16 @@ CardRouter.route('/')
       })
       .catch(next);
   })
-  .post(jsonBodyParser, (req, res, next) => {
-    for (const field of ['title', 'content', 'tags', 'author']) {
-      if (!req.body[field]) {
-        logger.error(`${field} is required`);
-        return res.status(400).send({
-          error: { message: `${field} is required` },
-        });
-      }
-    }
-
-    const { title, content, tags, author } = req.body;
-    const newCard = { title, content, tags, author };
+  .post(jsonBodyParser, requireToken, checkCardContent, (req, res) => {
+    const { title, content, tags, userId } = req.body;
+    const newCard = { title, content, tags, userId };
 
     CardService.insertCard(req.app.get('db'), newCard)
       .then((card) => {
         logger.info(`card with id of ${card.id} has been created!`);
         return res.status(201).location(`/cards/${card.id}`).json(card);
       })
-      .catch(next);
+      .catch((err) => console.log(err));
   })
   .patch(jsonBodyParser, (req, res, next) => {
     const { tries } = req.body;
@@ -53,22 +50,33 @@ CardRouter.route('/')
         return res.status(204).end();
       })
       .catch(next);
-  })
-  .delete(jsonBodyParser, (req, res, next) => {
-    const { id } = req.body;
-    console.log(id);
-    CardService.deleteCard(req.app.get('db'), id)
-      .then((numRowsAffected) => {
-        logger.info(`card with id ${id} has been deleted!`);
-        return res.status(204).end();
-      })
-      .catch(next);
   });
 
-CardRouter.route('/:authorId').get((req, res, next) => {
-  const { id } = req;
+CardRouter.route('/:id')
+  .all(checkCardExists)
+  .get((req, res) => res.json(card))
+  .patch(
+    jsonBodyParser,
+    requireToken,
+    checkUserId,
+    checkCardContent,
+    (req, res) => {
+      const { id } = req.params;
+      const { content } = req.body;
 
-  console.log(id);
-});
+      return CardService.updateCardContent(
+        req.app.get('db'),
+        id,
+        content
+      ).then((updatedCard) => res.status(200).json(updatedCard));
+    }
+  )
+  .delete(jsonBodyParser, requireToken, checkUserId, (req, res) => {
+    const { id } = req.params;
+
+    return CardService.deleteCard(req.app.get('db'), id).then(
+      res.status(204).end()
+    );
+  });
 
 module.exports = CardRouter;
